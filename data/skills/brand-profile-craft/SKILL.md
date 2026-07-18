@@ -481,27 +481,38 @@ Reference examples (style and structure inspiration only; create a new, original
 {{referenceExamples}}
 {{variationHint}}
 
+Before drawing, lock ONE visual metaphor from the brand story (e.g. checkpoint, ledger line, scope reticle, yield growth chevron). Commit to that metaphor; do not blend unrelated symbols.
+
 Requirements for your SVG:
 
-1. Identity: One cohesive logo mark that clearly reads as this brand’s logo. Minimal, geometric, recognizable at small sizes. No clip-art feel; no random decorative icon. Create a distinct concept—avoid generic or overused solutions.
+1. Identity: One cohesive pictorial/abstract mark that reads as THIS product’s logo. Minimal, geometric, memorable. No clip-art. Distinct concept — reject category clichés.
 
 2. Style—outlines over fills:
-   - Prefer clean outlines and strokes over large filled areas. Use line-based or outline style where possible; avoid heavy solid fills that dominate the mark.
-   - Prefer crisp, simple shapes: clear geometry, readable silhouettes, and well-defined strokes rather than big blocks of fill.
-   - If you use fill, use it sparingly (e.g. small accents); the mark should read primarily as outlines and clean shapes.
+   - Prefer clean outlines and strokes over large filled areas. Line-based / outline style preferred.
+   - Crisp geometry; silhouette must pass a squint test (reads as one idea when filled solid black).
+   - If you use fill, use it sparingly (small accents only).
 
-3. Geometry and composition:
-   - All shapes must sit inside the viewBox with no clipping or overflow. Use viewBox="0 0 48 48" and keep paths/coordinates within 0–48.
-   - If the design is symmetrical, make the symmetry precise (e.g. mirrored halves align cleanly). Do not produce half-finished or accidentally broken symmetry.
-   - If the design is intentionally asymmetric, the composition must feel deliberate and balanced—not like a mistake or a misaligned element.
-   - Avoid: floating shapes that don’t relate to the whole, overlapping elements that look accidental, or one side that looks “off” compared to the other without clear intent.
+3. Geometry and composition (hard):
+   - viewBox="0 0 48 48"; all coordinates in 0–48; subject fits inside an ~80% safe zone (margin ≥4 units from each edge).
+   - Path budget: ≤12 drawable elements (path/circle/ellipse/rect/line/polyline/polygon). Prefer primitives over long paths.
+   - Stroke width ≈ 2.5–3.5 in viewBox units (readable at 16–24px favicon). Round caps/joins.
+   - Symmetry must be precise if intended; asymmetry must look deliberate, not broken.
+   - Optical balance over math centering: shift triangles/curves ~1 unit if needed so they *feel* centered.
+   - Negative space carries structure — do not fill every cell.
 
 4. Technical:
-   - One cohesive mark (no images, no scripts).
-   - viewBox="0 0 48 48".
-   - Use fill="currentColor" and/or stroke="currentColor" so the app can tint it.
+   - One cohesive mark (no images, no scripts, no text, no fonts, no gradients, no filters, no foreignObject).
+   - fill="currentColor" and/or stroke="currentColor" only (no hex fills).
    - Only safe elements: svg, g, path, circle, ellipse, rect, line, polyline, polygon.
-   - Keep it simple: one group of shapes, geometric, suitable as app icon or favicon.
+   - Close paths with Z when filled. Round coordinates to ≤2 decimals.
+
+5. Negative prompts (do NOT emit):
+   - Generic crypto orb / coin / hexagon badge / leaf / sprout / rocket / moon
+   - Letter-in-circle monograms that just spell the brand initial
+   - Empty or nearly empty tiles; floating unrelated dots
+   - Hairline clutter; >3 perceptual shapes at favicon size
+   - Photo-like fills, drop shadows, glows, gradients
+   - Accidental letterforms or house/roof silhouettes unless the brand is housing
 
 Respond with valid JSON only, no markdown:
 {"svg":"<svg viewBox=\"0 0 48 48\" ...>...</svg>"}
@@ -523,9 +534,10 @@ User refinement request (optional; if empty, suggest a clear improvement such as
 
 Requirements for your refined SVG:
 
-- Keep viewBox="0 0 48 48" and all technical constraints (only svg, g, path, circle, ellipse, rect, line, polyline, polygon; fill/stroke currentColor).
+- Keep viewBox="0 0 48 48" and all technical constraints (only svg, g, path, circle, ellipse, rect, line, polyline, polygon; fill/stroke currentColor; no text/gradients/filters).
+- Path budget ≤12 drawables; stroke ≈ 2.5–3.5; 80% safe zone; silhouette must pass squint test.
 - Stay recognizable as a refinement of the original, not a completely new mark.
-- Prefer clean outlines and strokes over large filled areas.
+- Prefer clean outlines and strokes over large filled areas. Strengthen metaphor clarity; remove decorative paths that do not change the silhouette.
 - Respond with valid JSON only, no markdown: {"svg":"<svg viewBox=\"0 0 48 48\" ...>...</svg>"}
 
 ### judge-logo-pointwise

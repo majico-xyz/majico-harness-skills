@@ -69,27 +69,38 @@ Direct Quiver probe (not the 4b path): `quiver_generate_svg` / `quiver_vectorize
 - Reddit brand-identity dorks for positioning cues
 - Skip full market scan unless user explicitly asks for category density
 
-## Agent loop — feature-killer logos (MCP staging)
+## Prompt + verify contract
 
-Use when the user delegates visual judgment ("you pick", "iterate until killer", "reseed and improve").
+Engine prompts (`generate-logo-svg` / `refine-logo-svg` in brand-profile-craft) enforce:
+
+- Metaphor lock (one idea from brand story)
+- `viewBox="0 0 48 48"`, 80% safe zone, path budget ≤12, stroke ~2.5–3.5
+- `currentColor` only; no text / gradients / filters
+- Explicit **negative prompts**: crypto orb/coin/hex badge/leaf/rocket, letter-in-circle, empty tiles, hairline clutter
+
+Post-generate: `verifyAndCleanupLogoSvg` (extract JSON → cleanup fences/nested roots → structural verify). Cleanup does **not** mean the mark is good — visual judgment still required.
+
+## Agent loop — batch until ≥80% good (MCP staging)
+
+Use when the user delegates visual judgment ("you pick", "iterate until killer", ">80% good batch", "reseed and improve"). Self-pace like Cursor `/loop` (dynamic): generate → judge → refine → regenerate until the stop condition.
 
 1. **Scope** — `ping` + confirmed `projectId` (never auto-switch).
 2. **Brief** — If reseeding: `submit_brief` with productName + oneLiner (+ audience/goals). Wait for niche/brand jobs if needed.
 3. **Engine batch** — Prefer a worker `logo_batch` with `LOGO_LLM_MODEL=majico-logo-4b`. `generate_asset` with `skillId: "logo-generation"` also works when the pipeline adapter resolves. Poll until completed. Confirm worker used `backend: llm` / `majico-logo-4b`, not Quiver, unless Quiver was intentional.
-4. **Render** — `list_logo_candidates`. Prefer inline PNG image blocks. If MCP returns black tiles (`currentColor` on dark), re-rasterize locally with light pad + `#111` ink before judging. Reject `0.0.0.0` picker hosts; use session public origin.
-5. **Judge visually** (agent reads each preview image):
+4. **Render** — `list_logo_candidates`. Prefer inline PNG image blocks; Read rasterized PNGs when needed. **Never** `![...](C:\path)` markdown. If MCP returns black tiles (`currentColor` on dark), re-rasterize locally with light pad + `#111` ink. Reject `0.0.0.0` picker hosts; use session public origin.
+5. **Judge every candidate** (honest pass/fail):
 
-| Dimension | Killer bar |
+| Dimension | Good bar |
 | --- | --- |
-| Distinctiveness | Not a generic crypto orb, letter-in-circle, or stock "yield leaf" |
-| Brand fit | Reads as product story (checkpoint, ledger, scope, clarity) without spelling the name |
-| Simplicity | Holds at 16–24px; no hairline clutter |
-| Geometry | Intentional symmetry or deliberate asymmetry; no broken mirrors |
-| Theming | Works as `currentColor` on light and dark |
+| Distinctiveness | Not generic crypto orb, letter-in-circle, stock yield leaf/sprout, empty/black tile |
+| Brand fit | Product metaphor (checkpoint, ledger, scope, pure yield) without spelling the name |
+| Simplicity | ≤3 perceptual shapes; holds at 16–24px; no hairline clutter |
+| Geometry | Intentional symmetry or deliberate asymmetry; safe zone; no broken mirrors |
+| Theming | `currentColor` outline-friendly on light and dark |
 
-6. **Select** — Only with `userConfirmed: true` **or** `userDelegatedPick: true` when the user explicitly delegated. Same turn as list is OK under delegation.
-7. **Show progress** — After each selection, render the winning mark in chat (light-bg PNG) so the human sees iteration.
-8. **Iterate** — If not killer: another `logo_batch`, or `refineLogoSvg` with a precise brief ("scope + yield triangle", "less house silhouette"). Repeat until the bar is met or the user stops.
+6. **Batch score** — `good_rate = good_count / n`. **Stop only when `good_rate > 0.80`.** If lower: write failure modes, tighten metaphor/negatives, enqueue another batch (or refine near-misses). Do not settle on mediocre marks.
+7. **Select** — Only with `userConfirmed: true` **or** `userDelegatedPick: true` when the user explicitly delegated. Pick the strongest **good** mark from a passing batch.
+8. **Show progress** — After each batch, report good% and top rejects. After selection, render the winning mark (light-bg PNG).
 
 Hard rejects: black/empty preview tiles, template-only shortlists when a 4b batch was requested, clip-art, text-as-logo, photo-like fills, accidental letterforms.
 
