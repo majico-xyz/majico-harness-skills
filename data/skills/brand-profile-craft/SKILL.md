@@ -481,7 +481,15 @@ Reference examples (style and structure inspiration only; create a new, original
 {{referenceExamples}}
 {{variationHint}}
 
+Gold-pattern example (structure only — invent a NEW mark with the same discipline; do not copy path data):
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="14"/><path d="M24 30V18M18 24l6-6 6 6"/></g></svg>
+That pattern = one connected scope circle + yield chevron. Your mark must be equally connected and metaphor-clear, but visually different.
+
 Before drawing, lock ONE visual metaphor from the brand story (e.g. checkpoint, ledger line, scope reticle, yield growth chevron). Commit to that metaphor; do not blend unrelated symbols.
+
+Critical composition rule: the entire logo must read as ONE connected silhouette (touching or overlapping shapes). Never emit two or more floating disconnected fragments. If a piece can float away, delete it.
+
+Every drawable must set stroke="currentColor" and/or fill="currentColor" on the element (or a parent g). Never omit the color attribute.
 
 Requirements for your SVG:
 
@@ -509,10 +517,12 @@ Requirements for your SVG:
 5. Negative prompts (do NOT emit):
    - Generic crypto orb / coin / hexagon badge / leaf / sprout / rocket / moon
    - Letter-in-circle monograms that just spell the brand initial
-   - Empty or nearly empty tiles; floating unrelated dots
+   - Empty or nearly empty tiles; floating unrelated dots or slash marks
+   - Two+ disconnected fragments that do not touch (broken silhouette)
    - Hairline clutter; >3 perceptual shapes at favicon size
    - Photo-like fills, drop shadows, glows, gradients
    - Accidental letterforms or house/roof silhouettes unless the brand is housing
+   - Random abstract sticks that do not read as checkpoint, ledger, scope, or yield
 
 Respond with valid JSON only, no markdown:
 {"svg":"<svg viewBox=\"0 0 48 48\" ...>...</svg>"}

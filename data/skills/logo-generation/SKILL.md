@@ -98,7 +98,7 @@ Use when the user delegates visual judgment ("you pick", "iterate until killer",
 | Geometry | Intentional symmetry or deliberate asymmetry; safe zone; no broken mirrors |
 | Theming | `currentColor` outline-friendly on light and dark |
 
-6. **Batch score** — `good_rate = good_count / n`. **Stop only when `good_rate > 0.80`.** If lower: write failure modes, tighten metaphor/negatives, enqueue another batch (or refine near-misses). Do not settle on mediocre marks.
+6. **Batch score** — `good_rate = good_count / n`. **Stop only when `good_rate > 0.80`.** If lower: write failure modes, tighten metaphor/negatives, enqueue another batch (or refine near-misses). After 2 cold fails → seed-guided refine; if still <80% → curated gold seeds (`scripts/logo-quality-batch-curated.ts`) and pick best. Do not settle on mediocre marks.
 7. **Select** — Only with `userConfirmed: true` **or** `userDelegatedPick: true` when the user explicitly delegated. Pick the strongest **good** mark from a passing batch.
 8. **Show progress** — After each batch, report good% and top rejects. After selection, render the winning mark (light-bg PNG).
 
