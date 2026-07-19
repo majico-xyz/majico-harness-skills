@@ -22,9 +22,11 @@ canvas:
 
 # Logo Generation
 
-Generate a batch of original brand-mark SVGs for a Majico project, then shortlist and select via Studio / MCP.
+Generate a batch of original **brand-mark** SVGs for a Majico project, then shortlist and select via Studio / MCP.
 
-**Thesis:** `majico-logo-4b` is good at SVG. Bad marks are usually **bad skill/prompt input**. Fix prompts; do not claim curated folders are "good" while MCP still shows junk. Target **decent** (cohesive readable mark) — not elite agency quality.
+**Thesis:** `majico-logo-4b` is good at SVG. Bad marks are usually **bad skill/prompt input**. Fix prompts; do not claim curated folders are "good" while MCP still shows junk.
+
+**Quality bar:** decent **brand marks** (distinctive identity, memorable metaphor, wordmark companion) — not elite agency work, and **not UI icons / system glyphs**.
 
 ## Authoritative SVG backends
 
@@ -40,7 +42,7 @@ Routing: `@majico/logo` `resolveLogoGenBackend` — Ollama logo ops beat Quiver 
 ### Engine model contract (`majico-logo-4b`)
 
 - Finetuned on Majico `generate-logo-svg` JSON prompts (`{"svg":"<svg …>"}`).
-- Expects brand story + positioning + archetype + reference silhouettes + **recipe-style** variation hint.
+- Expects brand story + positioning + archetype + reference silhouettes + **brand-mark** variation hint.
 - Output: `viewBox="0 0 48 48"`, `currentColor`, safe elements only, outline-first.
 
 Env:
@@ -57,16 +59,15 @@ MCP: `generate_asset` (`skillId: logo-generation`) → `get_asset_status` → `l
 
 ## Prompt contract (brand-profile-craft `generate-logo-svg`)
 
-Borrowed from external skills (svg-authoring, svg-logo-generator, svg-logo-designer):
-
 | Rule | Source idea |
 | --- | --- |
 | Metaphor → primitives → assemble | svg-logo-generator |
 | Silhouette / squint test; ≤3 perceptual shapes; every path earns its place | svg-authoring |
-| Lock one mark type; icon-only for small | svg-logo-designer |
+| Lock one mark type; brand personality over chrome | svg-logo-designer + Majico |
 | Path budget ≤8; 80% safe zone; stroke ~2.5–3.5; currentColor | Majico + svg-authoring |
+| Asymmetric interest / negative space OK; wordmark companion | Majico brand creativity |
 
-### Observed failure modes (never call these "decent")
+### Observed failure modes (never call these brand-usable)
 
 From real bad MCP galleries:
 
@@ -76,19 +77,22 @@ From real bad MCP galleries:
 4. Grid/jumble bars with no single silhouette
 5. Random abstract sticks with no metaphor
 6. Orphan chevrons / dots outside a container
+7. **UI icons / tool glyphs** — check-in-circle/square, reticle/crosshair ticks, signal/wifi bars, upload-arrow-in-circle, gauge/needle widgets, Material/SF-symbol vibes, app-chrome container+stock-glyph
 
-### Decent bar (pass/fail)
+### Brand-usable bar (pass/fail)
 
-**Decent** = intentional single silhouette, readable at small size, on-metaphor enough (scope/yield/checkpoint), not trash. Not elite branding.
+**Pass** = cohesive silhouette, product metaphor with personality, would look odd as a Material/SF tab icon, works beside a wordmark.
 
-Hard rejects: floating fragments, letter noise, empty/black tiles, crypto orb clichés, accidental letterforms.
+**Fail** = fragments/letter-noise **or** reads as tab-bar / settings / dashboard chrome (even if geometrically clean).
 
-## Agent loop — skill-adapt until >80% decent
+Hard rejects: floating fragments, letter noise, empty/black tiles, crypto orb clichés, accidental letterforms, **UI affordance glyphs**.
 
-1. Analyze failures → tighten `generate-logo-svg` negatives + RECIPE variation hints (+ optional `LOGO_EXTRA_CONSTRAINTS`).
+## Agent loop — skill-adapt until >80% brand-usable
+
+1. Analyze failures → tighten `generate-logo-svg` negatives + **brand-mark** variation hints (+ optional `LOGO_EXTRA_CONSTRAINTS`). Push creativity; ban UI-icon recipes.
 2. Generate batch with `majico-logo-4b` (local loop script or worker).
-3. Visually judge every candidate (MCP image blocks / Read PNG). Never Windows-path markdown.
-4. Score `decent_rate`. If <80%: adapt skill/prompt → regenerate. Minimum **10** full iterations before presenting a new gallery to the user when they requested a long loop.
+3. Visually judge every candidate for **brand-usable** (MCP image blocks / Read PNG). Never Windows-path markdown.
+4. Score `brand_usable_rate`. If <80%: adapt skill/prompt → regenerate. Minimum **10** full iterations before presenting when a long loop was requested.
 5. When presenting: MCP `list_logo_candidates` must show the judged batch (sync into `project_generated_logos` if generated locally). Do not claim quality the picker does not show.
 
 Scripts: `scripts/logo-skill-adapt-loop.ts`, `scripts/logo-quality-batch.ts`.
@@ -99,3 +103,4 @@ Scripts: `scripts/logo-skill-adapt-loop.ts`, `scripts/logo-quality-batch.ts`.
 - Do not overwrite user-selected logos without confirmation / delegated pick
 - Do not call `quiver_generate_svg` and claim `majico-logo-4b`
 - Do not call curated seed folders "100% good" while MCP still lists junk
+- Do not present UI-icon packs as brand logos
